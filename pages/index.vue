@@ -69,9 +69,9 @@
 
         <br />
         <div>
-          <el-button type="primary" class="transfer" @click="sendRPG"
-            >send</el-button
-          >
+          <el-button type="primary" class="transfer" @click="sendRPG">
+            send
+          </el-button>
         </div>
 
         <div>{{ txHash }}</div>
@@ -230,7 +230,7 @@ export default Vue.extend({
         this.upRangers.getUPCore().initPop()
 
         // SEND RPG
-        this.txHash = await this.upRangers.transferEth(
+        this.txHash = await this.upRangers.transferNativeToken(
           this.toAddress,
           this.upRangers.getWeb3().utils.toWei(this.toAmount),
         )

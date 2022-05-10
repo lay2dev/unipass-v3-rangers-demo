@@ -10821,19 +10821,15 @@ up-core-test@^0.1.6:
   resolved "https://mirrors.cloud.tencent.com/npm/up-core-test/-/up-core-test-0.1.6.tgz#46d79bdbac6cc0ad26c47f7856ee893c77560f6b"
   integrity sha512-AhFnaYt/diMJoL2rwPYmVG9BPjq6ShpWC1PaR9fTCoIgUKbOUjSTxLXG19vXasjsyR3JihTHMjGrWUKB/TPZgQ==
 
-up-core-test@^0.1.7:
+"up-core-test@file:../../unipass-v3/up-core":
   version "0.1.7"
-  resolved "https://registry.yarnpkg.com/up-core-test/-/up-core-test-0.1.7.tgz#5a5c7685ef0c61da5ebae3c6c2190077432092aa"
-  integrity sha512-RD9HeJDMjA3GUfC6qqLueOB+ToVCwqgGhdK7VwRGU+tPwtYdVL+utKWbHH/hhUg6gBoFGX4hUhz3wnBkPHqqJQ==
 
-up-rangers@^0.1.1:
+up-rangers@../../unipass-v3/up-rangers:
   version "0.1.1"
-  resolved "https://registry.yarnpkg.com/up-rangers/-/up-rangers-0.1.1.tgz#32583f449eece43190e40ad280198235e64cb513"
-  integrity sha512-9BL8GwhKe8agZPWjYXmOuiFNDvoR2AG8sYPEh3hxhA0gEuLzMmofF4cP3pCmI/EhknArvqbHhl3ZS6YC5PdGSA==
   dependencies:
     "@rangersprotocolweb3/web3" "^1.0.8"
     axios "^0.26.0"
-    up-core-test "^0.1.7"
+    up-core-test "file:../../unipass-v3/up-core"
 
 upath@^1.1.1:
   version "1.2.0"
