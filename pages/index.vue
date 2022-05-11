@@ -65,12 +65,26 @@
           <el-form-item label="Amount:" prop="address">
             <el-input v-model="toAmount" clearable />
           </el-form-item>
+          <el-form-item label="Fee:" prop="fee">
+            <el-input v-model="toFeeAmount" clearable />
+          </el-form-item>
+          <el-form-item label="Description:" prop="description">
+            <el-input v-model="toDescription" clearable />
+          </el-form-item>
         </el-form>
 
         <br />
         <div>
           <el-button type="primary" class="transfer" @click="sendRPG">
-            send
+            sendRPG
+          </el-button>
+          <br />
+          <br />
+          <el-button class="transfer" @click="sendToken"> sendToken </el-button>
+          <br />
+          <br />
+          <el-button type="primary" class="transfer" @click="executeCall">
+            executeCall
           </el-button>
         </div>
 
@@ -129,6 +143,8 @@ export default Vue.extend({
       myBalance: '0.00',
       toAddress: '0x8291507Afda0BBA820efB6DFA339f09C9465215C',
       toAmount: '0.01',
+      toFeeAmount: '0.000001',
+      toDescription: '觐见艾尔登法环，成为艾尔登之王',
       txHash: '',
       form: {},
       // STEP 1: create UPRangers instance
@@ -137,6 +153,7 @@ export default Vue.extend({
         userInfoContract: process.env.RANGERS_UNIPASS_CONTRACT,
         upCoreConfig: {
           domain: process.env.UNIPASS_URL,
+          // domain: 'localhost:3000',
           // protocol: 'http',
         },
       }),
@@ -156,9 +173,12 @@ export default Vue.extend({
       console.log('connect clicked')
       try {
         // STEP 2: connect unipass
-        const account = await this.upRangers
-          .getUPCore()
-          .connect({ email: true, evmKeys: true })
+        const account = await this.upRangers.getUPCore().connect({
+          email: true,
+          evmKeys: true,
+          chain: '1',
+          theme: 'dark' as any,
+        })
         this.username = account.username
         console.log('account', account)
 
@@ -233,6 +253,15 @@ export default Vue.extend({
         this.txHash = await this.upRangers.transferNativeToken(
           this.toAddress,
           this.upRangers.getWeb3().utils.toWei(this.toAmount),
+          {
+            feeToken: {
+              address: '0x0000000000000000000000000000000000000000',
+              symbol: 'RPG',
+              decimals: 18,
+            },
+            feeAmount: this.upRangers.getWeb3().utils.toWei(this.toFeeAmount),
+            description: this.toDescription,
+          },
         )
         console.log('send RPG success', this.txHash)
         this.$message.success(`send RPG success, tx hash = ${this.txHash}`)
@@ -249,9 +278,22 @@ export default Vue.extend({
 
         // SEND DAI(ERC20) token
         this.txHash = await this.upRangers.transferToken(
-          DAI_ADDRESS,
+          {
+            address: '0x0000000000000000000000000000000000000000',
+            symbol: 'RPG',
+            decimals: 18,
+          },
           this.toAddress,
           this.upRangers.getWeb3().utils.toWei(this.toAmount),
+          {
+            feeToken: {
+              address: '0x0000000000000000000000000000000000000000',
+              symbol: 'RPG',
+              decimals: 18,
+            },
+            feeAmount: this.upRangers.getWeb3().utils.toWei(this.toFeeAmount),
+            description: this.toDescription,
+          },
         )
 
         console.log('send Token success', this.txHash)
@@ -289,6 +331,15 @@ export default Vue.extend({
               this.upRangers.getWeb3().utils.toWei(this.toAmount),
             ],
           ),
+          {
+            feeToken: {
+              address: '0x0000000000000000000000000000000000000000',
+              symbol: 'RPG',
+              decimals: 18,
+            },
+            feeAmount: this.upRangers.getWeb3().utils.toWei(this.toFeeAmount),
+            description: this.toDescription,
+          },
         )
         console.log('execute call success', this.txHash)
         this.$message.success(`execute call success, tx hash = ${this.txHash}`)
