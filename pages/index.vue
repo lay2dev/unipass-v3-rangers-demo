@@ -13,9 +13,12 @@
       >
     </div>
     <div v-else>
-      <el-button type="primary" class="transfer login" @click="connect"
-        >login</el-button
-      >
+      <br />
+      <el-radio v-model="toTheme" label="dark">Dark</el-radio>
+      <el-radio v-model="toTheme" label="light">Light</el-radio>
+      <el-button type="primary" class="transfer login" @click="connect">
+        login
+      </el-button>
     </div>
     <el-tabs
       v-show="username"
@@ -145,6 +148,7 @@ export default Vue.extend({
       toAmount: '0.01',
       toFeeAmount: '0.000001',
       toDescription: '觐见艾尔登法环，成为艾尔登之王',
+      toTheme: 'dark',
       txHash: '',
       form: {},
       // STEP 1: create UPRangers instance
@@ -177,7 +181,7 @@ export default Vue.extend({
           email: true,
           evmKeys: true,
           chain: '1',
-          theme: 'dark' as any,
+          theme: this.toTheme as any,
         })
         this.username = account.username
         console.log('account', account)
