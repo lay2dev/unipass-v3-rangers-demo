@@ -18,7 +18,7 @@
     "element-ui": "^2.15.1",
     "ethereumjs-util": "^7.1.2",
     "up-core-test": "^0.1.6",
-    "up-rangers": "../../unipass-v3/up-rangers",
+    "up-rangers": "^0.1.2",
     "v-clipboard": "^2.2.3"
   },
   "devDependencies": {
