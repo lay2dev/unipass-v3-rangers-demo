@@ -283,8 +283,8 @@ export default Vue.extend({
         // SEND DAI(ERC20) token
         this.txHash = await this.upRangers.transferToken(
           {
-            address: '0x0000000000000000000000000000000000000000',
-            symbol: 'RPG',
+            address: DAI_ADDRESS,
+            symbol: 'DAI',
             decimals: 18,
           },
           this.toAddress,
