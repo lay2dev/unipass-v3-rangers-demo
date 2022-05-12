@@ -147,7 +147,7 @@ export default Vue.extend({
       toAddress: '0x8291507Afda0BBA820efB6DFA339f09C9465215C',
       toAmount: '0.01',
       toFeeAmount: '0.000001',
-      toDescription: '觐见艾尔登法环，成为艾尔登之王',
+      toDescription: '描述测试描述测试描述测试',
       toTheme: 'dark',
       txHash: '',
       form: {},

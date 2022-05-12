@@ -5,6 +5,8 @@
   "scripts": {
     "start": "nuxt -open",
     "build": "nuxt generate",
+    "preview": "nuxt start",
+    "vercel": "cd dist&&vercel",
     "lint": "eslint --fix --ext \".js,.vue\" --ignore-path .gitignore ."
   },
   "dependencies": {
