@@ -72,8 +72,12 @@
           <el-form-item label="To">
             <el-input v-model="toAddress" placeholder="Address" clearable />
           </el-form-item>
-          <el-form-item label="Token" prop="token">
-            <el-select v-model="tokenSelect" placeholder="请选择">
+          <el-form-item label="Token" prop="token" class="token">
+            <el-select
+              v-model="tokenSelect"
+              placeholder="请选择"
+              popper-class="token"
+            >
               <el-option
                 v-for="item in tokens"
                 :key="item.value"
@@ -84,7 +88,11 @@
                 <span>{{ item.label }}</span>
               </el-option>
             </el-select>
-            <el-input placeholder="Amount"></el-input>
+            <el-input
+              v-model="toAmount"
+              type="number"
+              placeholder="Amount"
+            ></el-input>
           </el-form-item>
           <el-form-item label="Fee">
             <el-radio v-model="toToken" label="BNB" class="token-radio">
@@ -195,7 +203,7 @@ export default Vue.extend({
       myBalance: '0.00',
       toAddress: '',
       // toAddress: '0x8291507Afda0BBA820efB6DFA339f09C9465215C',
-      toAmount: '0.01',
+      toAmount: '',
       toFeeAmount: '0.000001',
       toDescription: '描述测试描述测试描述测试',
       toTheme: 'dark',
@@ -550,6 +558,14 @@ export default Vue.extend({
   .balance-box + .balance-box {
     margin-top: 15px;
   }
+  .el-form-item.token {
+    .el-form-item__content {
+      display: flex;
+      .el-select {
+        margin-right: 10px;
+      }
+    }
+  }
 }
 
 .unipass-page {
@@ -560,5 +576,14 @@ export default Vue.extend({
   flex-direction: column;
   min-height: 100vh;
   text-align: center;
+}
+.el-select-dropdown.token {
+  .el-select-dropdown__item {
+    display: flex;
+    align-items: center;
+    img {
+      margin-right: 8px;
+    }
+  }
 }
 </style>
