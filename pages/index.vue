@@ -55,17 +55,19 @@
           <el-form-item label="Your Balance">
             <!-- <el-input v-model="myBalanceFormat" disabled readonly /> -->
             <div class="balance-box">
-              <div class="left">
-                <img src="@/assets/img/BNB.svg" alt="BNB" />
-                <span>BNB</span>
-              </div>
+              <up-balance name="BNB" />
               <div class="right">0.02</div>
             </div>
             <div class="balance-box">
-              <div class="left">
-                <img src="@/assets/img/ETH.svg" alt="ETH" />
-                <span>ETH</span>
-              </div>
+              <up-balance name="ETH" />
+              <div class="right">0.02</div>
+            </div>
+            <div class="balance-box">
+              <up-balance name="USDT" />
+              <div class="right">0.02</div>
+            </div>
+            <div class="balance-box">
+              <up-balance name="USDC" />
               <div class="right">0.02</div>
             </div>
           </el-form-item>
@@ -95,30 +97,19 @@
             ></el-input>
           </el-form-item>
           <el-form-item label="Fee">
-            <el-radio v-model="toToken" label="BNB" class="token-radio">
+            <el-radio
+              v-for="(balance, i) in balanceList"
+              :key="i"
+              v-model="toToken"
+              :label="balance.name"
+              class="token-radio"
+            >
               <div class="balance-box">
-                <div class="left">
-                  <img src="@/assets/img/BNB.svg" alt="BNB" />
-                  <span>BNB</span>
-                </div>
+                <up-balance :name="balance.name" />
                 <div class="right">
-                  <span>0.02</span>
+                  <span>{{ balance.fee }}</span>
                   <div class="dot-box">
-                    <div v-show="toToken === 'BNB'" class="dot"></div>
-                  </div>
-                </div>
-              </div>
-            </el-radio>
-            <el-radio v-model="toToken" label="ETH" class="token-radio">
-              <div class="balance-box">
-                <div class="left">
-                  <img src="@/assets/img/ETH.svg" alt="ETH" />
-                  <span>ETH</span>
-                </div>
-                <div class="right">
-                  <span>0.02</span>
-                  <div class="dot-box">
-                    <div v-show="toToken === 'ETH'" class="dot"></div>
+                    <div v-show="toToken === balance.name" class="dot"></div>
                   </div>
                 </div>
               </div>
@@ -209,6 +200,24 @@ export default Vue.extend({
       toTheme: 'dark',
       toToken: 'BNB',
       txHash: '',
+      balanceList: [
+        {
+          name: 'BNB',
+          fee: 0.01,
+        },
+        {
+          name: 'ETH',
+          fee: 0.0001,
+        },
+        {
+          name: 'USDT',
+          fee: 0.1,
+        },
+        {
+          name: 'USDC',
+          fee: 0.1,
+        },
+      ],
       form: {},
       tokenSelect: 'ETH',
       tokens: [
@@ -524,15 +533,6 @@ export default Vue.extend({
     display: flex;
     justify-content: space-between;
     align-items: center;
-    .left {
-      display: flex;
-      align-items: center;
-      img {
-        width: 28px;
-        height: 28px;
-        margin-right: 8px;
-      }
-    }
     .right {
       display: flex;
       align-items: center;
