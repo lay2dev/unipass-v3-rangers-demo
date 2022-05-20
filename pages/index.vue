@@ -34,9 +34,9 @@
           :model="form"
           @submit.native.prevent
         >
-          <el-form-item label="Your Address:" prop="address">
+          <el-form-item label="Your Address">
             <template #label>
-              <span>Your Address:</span>
+              <span>Your Address</span>
               <i
                 v-show="myAddress"
                 class="iconfont icon-copy sea-background"
@@ -52,20 +52,71 @@
               :autosize="{ minRows: 1 }"
             />
           </el-form-item>
-          <span>
-            <b style="color: black">
-              <a href="https://robin-faucet.rangersprotocol.com/home">
-                Rangers Faucet:
-              </a>
-            </b>
-          </span>
-          <el-form-item label="Your Balance:" prop="address">
-            <el-input v-model="myBalanceFormat" disabled readonly />
+          <el-form-item label="Your Balance">
+            <!-- <el-input v-model="myBalanceFormat" disabled readonly /> -->
+            <div class="balance-box">
+              <div class="left">
+                <img src="@/assets/img/BNB.svg" alt="BNB" />
+                <span>BNB</span>
+              </div>
+              <div class="right">0.02</div>
+            </div>
+            <div class="balance-box">
+              <div class="left">
+                <img src="@/assets/img/ETH.svg" alt="ETH" />
+                <span>ETH</span>
+              </div>
+              <div class="right">0.02</div>
+            </div>
           </el-form-item>
-          <el-form-item label="Transfer RPG To:" prop="address">
-            <el-input v-model="toAddress" clearable />
+          <el-form-item label="To">
+            <el-input v-model="toAddress" placeholder="Address" clearable />
           </el-form-item>
-          <el-form-item label="Amount:" prop="address">
+          <el-form-item label="Token" prop="token">
+            <el-select v-model="tokenSelect" placeholder="请选择">
+              <el-option
+                v-for="item in tokens"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+                <img :src="item.icon" :alt="item.value" />
+                <span>{{ item.label }}</span>
+              </el-option>
+            </el-select>
+            <el-input placeholder="Amount"></el-input>
+          </el-form-item>
+          <el-form-item label="Fee">
+            <el-radio v-model="toToken" label="BNB" class="token-radio">
+              <div class="balance-box">
+                <div class="left">
+                  <img src="@/assets/img/BNB.svg" alt="BNB" />
+                  <span>BNB</span>
+                </div>
+                <div class="right">
+                  <span>0.02</span>
+                  <div class="dot-box">
+                    <div v-show="toToken === 'BNB'" class="dot"></div>
+                  </div>
+                </div>
+              </div>
+            </el-radio>
+            <el-radio v-model="toToken" label="ETH" class="token-radio">
+              <div class="balance-box">
+                <div class="left">
+                  <img src="@/assets/img/ETH.svg" alt="ETH" />
+                  <span>ETH</span>
+                </div>
+                <div class="right">
+                  <span>0.02</span>
+                  <div class="dot-box">
+                    <div v-show="toToken === 'ETH'" class="dot"></div>
+                  </div>
+                </div>
+              </div>
+            </el-radio>
+          </el-form-item>
+          <!-- <el-form-item label="Amount:" prop="address">
             <el-input v-model="toAmount" clearable />
           </el-form-item>
           <el-form-item label="Fee:" prop="fee">
@@ -73,9 +124,8 @@
           </el-form-item>
           <el-form-item label="Description:" prop="description">
             <el-input v-model="toDescription" clearable />
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
-
         <br />
         <div>
           <el-button type="primary" class="transfer" @click="sendRPG">
@@ -90,7 +140,6 @@
             executeCall
           </el-button>
         </div>
-
         <div>{{ txHash }}</div>
       </el-tab-pane>
       <el-tab-pane label="Sign Message" name="second">
@@ -144,13 +193,28 @@ export default Vue.extend({
       activeTab: 'first',
       myAddress: '',
       myBalance: '0.00',
-      toAddress: '0x8291507Afda0BBA820efB6DFA339f09C9465215C',
+      toAddress: '',
+      // toAddress: '0x8291507Afda0BBA820efB6DFA339f09C9465215C',
       toAmount: '0.01',
       toFeeAmount: '0.000001',
       toDescription: '描述测试描述测试描述测试',
       toTheme: 'dark',
+      toToken: 'BNB',
       txHash: '',
       form: {},
+      tokenSelect: 'ETH',
+      tokens: [
+        {
+          value: 'ETH',
+          label: 'ETH',
+          icon: require('@/assets/img/ETH.svg'),
+        },
+        {
+          value: 'BNB',
+          label: 'BNB',
+          icon: require('@/assets/img/BNB.svg'),
+        },
+      ],
       // STEP 1: create UPRangers instance
       upRangers: new UPRangers({
         chainID: ChainID.testnet,
@@ -356,13 +420,13 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="stylus">
+<style lang="scss">
 #page-demo {
   max-width: 480px;
   margin: 0 auto;
   overflow: hidden;
   position: relative;
-  background: #F5F5FF;
+  background: #f5f5ff;
 
   > * {
     z-index: 1;
@@ -402,7 +466,7 @@ export default Vue.extend({
     border-radius: 24px;
     margin: 30px auto 0px;
     width: 100%;
-    background: #FFFFFF;
+    background: #ffffff;
     padding: 0px 0 21px;
     overflow: hidden;
 
@@ -429,6 +493,62 @@ export default Vue.extend({
       width: 48%;
       font-size: 20px;
     }
+  }
+  .token-radio {
+    margin-right: 0;
+    .el-radio__input {
+      display: none;
+    }
+    .el-radio__label {
+      width: 100%;
+      padding: 0;
+    }
+  }
+  .token-radio + .token-radio {
+    margin-top: 15px;
+  }
+  .balance-box {
+    padding: 12px;
+    width: 100%;
+    background: #f5f5f7;
+    border-radius: 10px;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .left {
+      display: flex;
+      align-items: center;
+      img {
+        width: 28px;
+        height: 28px;
+        margin-right: 8px;
+      }
+    }
+    .right {
+      display: flex;
+      align-items: center;
+      .dot-box {
+        margin-left: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 16px;
+        height: 16px;
+        background: #ffffff;
+        border: 1px solid #c1c1c1;
+        border-radius: 50%;
+        .dot {
+          border-radius: 50%;
+          width: 8px;
+          height: 8px;
+          background: #0364ff;
+        }
+      }
+    }
+  }
+  .balance-box + .balance-box {
+    margin-top: 15px;
   }
 }
 
