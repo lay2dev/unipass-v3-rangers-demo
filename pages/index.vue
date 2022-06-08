@@ -180,7 +180,10 @@ export default Vue.extend({
         const account = await this.upRangers.getUPCore().connect({
           email: true,
           evmKeys: true,
-          chain: '1',
+          chain: {
+            id: 9527,
+            name: 'Rangers Protocol Testnet Robin',
+          },
           theme: this.toTheme as any,
         })
         this.username = account.username
