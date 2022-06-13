@@ -54,7 +54,7 @@
           </el-form-item>
           <span>
             <b style="color: black">
-              <a href="https://robin-faucet.rangersprotocol.com/home">
+              <a href="https://robin-faucet.rangersprotocol.com">
                 Rangers Faucet:
               </a>
             </b>
