@@ -5,7 +5,7 @@ export default {
   target: 'static',
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'UniPass L3 Demo',
+    title: 'UniPass Rangers Demo',
     meta: [
       { charset: 'utf-8' },
       {
