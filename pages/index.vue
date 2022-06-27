@@ -13,6 +13,8 @@
       >
     </div>
     <div v-else>
+      <div>entry: {{ config.entry }}</div>
+
       <br />
       <el-radio v-model="toTheme" label="dark">Dark</el-radio>
       <el-radio v-model="toTheme" label="light">Light</el-radio>
@@ -26,7 +28,7 @@
       class="body"
       type="border-card"
     >
-      <el-tab-pane label="RPG Transaction" name="first">
+      <el-tab-pane label="RPG Transaction" name="sign_transaction">
         <el-form
           ref="form"
           class="body-input"
@@ -59,16 +61,23 @@
               </a>
             </b>
           </span>
+          <el-form-item label="Token Type:" prop="address">
+            <el-radio-group v-model="tokenType">
+              <el-radio-button label="RPG"></el-radio-button>
+              <el-radio-button label="DAI(ERC20)"></el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+
           <el-form-item label="Your Balance:" prop="address">
             <el-input v-model="myBalanceFormat" disabled readonly />
           </el-form-item>
-          <el-form-item label="Transfer RPG To:" prop="address">
+          <el-form-item label="Transfer To:" prop="address">
             <el-input v-model="toAddress" clearable />
           </el-form-item>
           <el-form-item label="Amount:" prop="address">
             <el-input v-model="toAmount" clearable />
           </el-form-item>
-          <el-form-item label="Fee:" prop="fee">
+          <el-form-item label="Fee(RPG):" prop="fee">
             <el-input v-model="toFeeAmount" clearable />
           </el-form-item>
           <el-form-item label="Description:" prop="description">
@@ -77,12 +86,12 @@
         </el-form>
 
         <br />
-        <div>
+        <div v-if="tokenType === 'RPG'">
           <el-button type="primary" class="transfer" @click="sendRPG">
             sendRPG
           </el-button>
-          <br />
-          <br />
+        </div>
+        <div v-else>
           <el-button class="transfer" @click="sendToken"> sendToken </el-button>
           <br />
           <br />
@@ -93,7 +102,7 @@
 
         <div>{{ txHash }}</div>
       </el-tab-pane>
-      <el-tab-pane label="Sign Message" name="second">
+      <el-tab-pane label="Sign Message" name="sign_message">
         <div>
           <br />
           <h3 class="input">Message:</h3>
@@ -132,6 +141,8 @@
 import Vue from 'vue'
 import { UPAuthMessage, UPAuthResponse } from 'up-core-test'
 import { ChainID, UPRangers } from 'up-rangers'
+import { AbiItem, fromWei } from 'web3-utils'
+import { ERC20ABI } from '~/assets/js/erc20.abi'
 
 const DAI_ADDRESS = '0x25c58Aa062Efb4f069bD013De3e3C5797fb40651'
 
@@ -141,9 +152,11 @@ export default Vue.extend({
       username: '',
       message: 'TO BE SIGNED MESSAGE abc',
       sig: '',
-      activeTab: 'first',
+      activeTab: 'sign_transaction',
+      tokenType: 'RPG',
       myAddress: '',
-      myBalance: '0.00',
+      myRPGBalance: '0.00',
+      myTokenBalance: '0.00',
       toAddress: '0x8291507Afda0BBA820efB6DFA339f09C9465215C',
       toAmount: '0.01',
       toFeeAmount: '0.000001',
@@ -161,11 +174,17 @@ export default Vue.extend({
           // protocol: 'http',
         },
       }),
+      config: {
+        entry: process.env.RANGERS_UNIPASS_CONTRACT,
+      },
     }
   },
   computed: {
     myBalanceFormat(): string {
-      return this.myBalance + ' RPG'
+      const balance =
+        this.tokenType === 'RPG' ? this.myRPGBalance : this.myTokenBalance
+
+      return `${balance} ${this.tokenType}`
     },
   },
   methods: {
@@ -199,10 +218,30 @@ export default Vue.extend({
         console.log('connect err', err)
       }
     },
+    async checkTxStatus(txHash: string) {
+      let tryTimes = 0
+      while (tryTimes++ < 3) {
+        const receipt = await this.upRangers
+          .getWeb3()
+          .eth.getTransactionReceipt(txHash)
+
+        if (receipt) return receipt.status
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+      }
+      return false
+    },
     async refreshBalance() {
-      this.myBalance = await this.upRangers
+      this.myRPGBalance = await this.upRangers
         .getWeb3()
         .eth.getBalance(this.myAddress)
+
+      const tokenContract = new (this.upRangers.getWeb3().eth.Contract)(
+        ERC20ABI as AbiItem[],
+        DAI_ADDRESS,
+      )
+      this.myTokenBalance = fromWei(
+        await tokenContract.methods.balanceOf(this.myAddress).call(),
+      )
     },
     logout() {
       console.log('connect clicked')
@@ -249,7 +288,7 @@ export default Vue.extend({
       }
     },
     async sendRPG() {
-      if (Number(this.myBalance) < Number(this.toAmount)) {
+      if (Number(this.myRPGBalance) < Number(this.toAmount)) {
         this.$message.error('balance is not enough')
         return
       }
@@ -270,9 +309,12 @@ export default Vue.extend({
             description: this.toDescription,
           },
         )
-        console.log('send RPG success', this.txHash)
-        this.$message.success(`send RPG success, tx hash = ${this.txHash}`)
-
+        if (await this.checkTxStatus(this.txHash)) {
+          console.log('send RPG success', this.txHash)
+          this.$message.success(`send RPG success, tx hash = ${this.txHash}`)
+        } else {
+          this.$message.error(`send RPG failed, tx hash = ${this.txHash}`)
+        }
         await this.refreshBalance()
       } catch (err) {
         this.$message.error(err as string)
@@ -280,6 +322,10 @@ export default Vue.extend({
       }
     },
     async sendToken() {
+      if (Number(this.myTokenBalance) < Number(this.toAmount)) {
+        this.$message.error('token balance is not enough')
+        return
+      }
       try {
         this.upRangers.getUPCore().initPop()
 
@@ -303,14 +349,23 @@ export default Vue.extend({
           },
         )
 
-        console.log('send Token success', this.txHash)
-        this.$message.success(`send token success, tx hash = ${this.txHash}`)
+        if (await this.checkTxStatus(this.txHash)) {
+          console.log('send Token success', this.txHash)
+          this.$message.success(`send token success, tx hash = ${this.txHash}`)
+        } else {
+          this.$message.error(`send token failed, tx hash = ${this.txHash}`)
+        }
+        await this.refreshBalance()
       } catch (err) {
         this.$message.error(err as string)
         console.log('err', err)
       }
     },
     async executeCall() {
+      if (Number(this.myTokenBalance) < Number(this.toAmount)) {
+        this.$message.error('token balance is not enough')
+        return
+      }
       try {
         this.upRangers.getUPCore().initPop()
 
@@ -348,8 +403,16 @@ export default Vue.extend({
             description: this.toDescription,
           },
         )
-        console.log('execute call success', this.txHash)
-        this.$message.success(`execute call success, tx hash = ${this.txHash}`)
+        await this.checkTxStatus(this.txHash)
+        if (await this.checkTxStatus(this.txHash)) {
+          console.log('execute call success', this.txHash)
+          this.$message.success(
+            `execute call success, tx hash = ${this.txHash}`,
+          )
+        } else {
+          this.$message.error(`execute call failed, tx hash = ${this.txHash}`)
+        }
+        await this.refreshBalance()
       } catch (err) {
         this.$message.error(err as string)
         console.log('err', err)
