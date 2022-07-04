@@ -72,7 +72,7 @@
             <el-input v-model="myBalanceFormat" disabled readonly />
           </el-form-item>
           <el-form-item label="Transfer To:" prop="address">
-            <el-input v-model="toAddress" clearable />
+            <el-input v-model="toAddress" clearable @blur="onAddressChanged" />
           </el-form-item>
           <el-form-item label="Amount:" prop="address">
             <el-input v-model="toAmount" clearable />
@@ -210,8 +210,8 @@ export default Vue.extend({
 
         // STEP 3: init unipass with username and email
         await this.upRangers.initUniPass(this.username, account.email!)
-
         this.myAddress = this.upRangers.getAddress()
+
         await this.refreshBalance()
       } catch (err) {
         this.$message.error(err as string)
@@ -229,6 +229,18 @@ export default Vue.extend({
         await new Promise((resolve) => setTimeout(resolve, 1000))
       }
       return false
+    },
+    async onAddressChanged() {
+      try {
+        if (!this.upRangers.getWeb3().utils.isAddress(this.toAddress)) {
+          this.toAddress = await this.upRangers.getAddressByEmail(
+            this.toAddress,
+          )
+        }
+      } catch (err) {
+        this.$message.error(err as string)
+        console.log('getAddress by email err', err)
+      }
     },
     async refreshBalance() {
       this.myRPGBalance = await this.upRangers
