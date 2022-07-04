@@ -243,9 +243,9 @@ export default Vue.extend({
       }
     },
     async refreshBalance() {
-      this.myRPGBalance = await this.upRangers
-        .getWeb3()
-        .eth.getBalance(this.myAddress)
+      this.myRPGBalance = fromWei(
+        await this.upRangers.getWeb3().eth.getBalance(this.myAddress),
+      )
 
       const tokenContract = new (this.upRangers.getWeb3().eth.Contract)(
         ERC20ABI as AbiItem[],
