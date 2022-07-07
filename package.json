@@ -17,8 +17,7 @@
     "cross-fetch": "^3.1.4",
     "element-ui": "^2.15.1",
     "ethereumjs-util": "^7.1.2",
-    "up-core-test": "^0.1.9",
-    "up-rangers": "^0.1.4",
+    "up-rangers": "^0.1.5",
     "v-clipboard": "^2.2.3"
   },
   "devDependencies": {

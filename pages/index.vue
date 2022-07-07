@@ -204,6 +204,7 @@ export default Vue.extend({
             name: 'Rangers Protocol Testnet Robin',
           },
           theme: this.toTheme as any,
+          appName: 'Rangers Demo',
         })
         this.username = account.username
         console.log('account', account)

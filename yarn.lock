@@ -10821,19 +10821,19 @@ unset-value@^1.0.0:
     has-value "^0.3.1"
     isobject "^3.0.0"
 
-up-core-test@^0.1.9:
-  version "0.1.9"
-  resolved "https://registry.npmjs.org/up-core-test/-/up-core-test-0.1.9.tgz"
-  integrity sha512-NAAJrFm7XnmRzxRhQTlc3R7YnXPrHMu008tKnNveFlj9/zjkVJjq0hN1+NmUlCSm5W0VqBWcPPb7F7zy5Svd7w==
+up-core-test@^0.1.10:
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/up-core-test/-/up-core-test-0.1.10.tgz#e6f9683819e7170ad5a106a7d439eb478290c4d2"
+  integrity sha512-WjuaVDXMy2VgaOO0ngPtlkrV1Nrib44ChxEZwIQSf7rSiAkPSh4GXskEwRZAnB7oSMNHI2F2qdP5OcOxgI3HVQ==
 
-up-rangers@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/up-rangers/-/up-rangers-0.1.4.tgz#90d66e2adea4bd70870a29b33478999daf81ecf3"
-  integrity sha512-Olwa5XwvjW5hLORQO6ARgB2tjSFhMb9w0bQDcbfCt0ogLfPmJOlpyT/ieO4bhcr8rpOpodmTs/t++ooz6UW5Nw==
+up-rangers@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/up-rangers/-/up-rangers-0.1.5.tgz#2191ec1a38b27bd960fa31fb45060d7b29f7b4cc"
+  integrity sha512-ejENek7uPj4USMX4jGxgEXigKnDyo2ns4u5FMvCtm7MJjUIw11pWcKYJeNultlxHDzWp8mkdN2Ph3jAnTAlUmw==
   dependencies:
     "@rangersprotocolweb3/web3" "^1.0.8"
     axios "^0.26.0"
-    up-core-test "^0.1.9"
+    up-core-test "^0.1.10"
 
 upath@^1.1.1:
   version "1.2.0"
